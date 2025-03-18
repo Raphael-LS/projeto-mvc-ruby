@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [ :show, :edit ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @products = Product.all
@@ -23,9 +23,16 @@ class ProductsController < ApplicationController
   def edit; end
 
   def update
-    @product = Product.find(params[:id])
     if @product.update!(product_params)
       redirect_to products_url(@product)
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    if @product.destroy
+       redirect_to products_url
     else
       render :new, status: :unprocessable_entity
     end
@@ -36,6 +43,6 @@ class ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:name, :quantity, :price)
+    params.require(:product).permit(:id, :name, :quantity, :price)
   end
 end
